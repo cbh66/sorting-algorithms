@@ -1,0 +1,46 @@
+#!/bin/bash
+# A shell script for timing programs on a set of inputs.
+
+this_name="./time"
+
+#  USAGE:
+#  $ ./time name-of-program-to-time
+#
+# The script assumes:
+#    1) the argument given is also the name of an executable in the same folder
+#    OR when given to a makefile, such an executable will be created, AND
+#    2) There are a variety of files in a data/ folder in the same directory, and
+#       their contents are in the proper format for the program.
+#
+# Note that this script does not test for correctness of the program's output.
+#  It simply reports on the time taken on each data file.
+#  Note similarly that the program's output, if any, is not written to the console.
+
+
+if [ $# -eq 0 ]; then
+	echo "Usage: $this_name name-of-program-to-time"
+	exit 1
+fi
+
+data_folder="data"
+if ! [ -d $data_folder ]; then
+	echo "ERROR: Please set up a $data_folder directory within this directory"
+	exit 1
+fi
+
+program=$1
+if ! [ -x $program ]; then
+	make $program
+	if ! [ $? -eq 0 ]; then
+		echo "ERROR: The file $program does not exist or is not an executable in this directory,"
+		echo "and make was unable to create it"
+		exit 1
+	fi
+fi
+
+for file in $data_folder/*; do
+	echo "Timing input file $file:"
+	time $program < $file > /dev/null
+done
+
+exit 0
