@@ -6,7 +6,6 @@ CFLAGS=-c -Wall -Wextra
 LDFLAGS=-Wall -Wextra
 
 main: $(MAINFILE)
-	echo nope
 	$(CXX) $(CFLAGS) $(MAINFILE)
 
 %sort: %sort.o $(MAINOBJ)
@@ -16,4 +15,4 @@ main: $(MAINFILE)
 	$(CXX) $(CFLAGS) $<
 
 clean:
-	rm -f *.o *.d *~ core.* $(EXECUTABLE)
+	rm -f *.o *.d *~ core.*

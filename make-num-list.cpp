@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 					return 1;
 				}
 			} else if (amt_opt == argv[i]) {
-				if (i >= argc - 1 || (amt = atoi(argv[++i])) == 0) {
+				if (i >= argc - 1 || (amt = atoi(argv[++i])) <= 0) {
 					cerr << "Please provide a positive number after " << amt_opt << endl;
 					return 1;
 				}
@@ -110,7 +110,7 @@ void write_sorted_nums(int min, int max, int amt, ostream &file)
 {
 	string divider = "";
 	int gradient = 2 * (max - min + 1) / amt;
-	if (gradient < 3) gradient = 3;
+	if (gradient < 2) gradient = 2;             // Because mod doesn't work well with 1.
 	int current_num = min + rand() % gradient;
 	for (int i = 0; i < amt; i++) {
 		current_num += rand() % gradient;
@@ -123,7 +123,7 @@ void write_rev_sorted_nums(int min, int max, int amt, ostream &file)
 {
 	string divider = "";
 	int gradient = 2 * (max - min + 1) / (amt);
-	if (gradient < 3) gradient = 3;
+	if (gradient < 2) gradient = 2;
 	int current_num = max - rand() % gradient;
 	for (int i = 0; i < amt; i++) {
 		current_num -= rand() % gradient;
