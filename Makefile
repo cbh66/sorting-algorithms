@@ -8,6 +8,9 @@ LDFLAGS=-Wall -Wextra
 main: $(MAINFILE)
 	$(CXX) $(CFLAGS) $(MAINFILE)
 
+num-list: make-num-list.cpp
+	$(CXX) $(LDFLAGS) make-num-list.cpp -o make-num-list
+
 %sort: %sort.o $(MAINOBJ)
 	$(CXX) $(LDFLAGS) $^ -o $@
 
