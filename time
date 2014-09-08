@@ -40,7 +40,7 @@ fi
 
 for file in $data_folder/*; do
 	echo "Timing input file $file:"
-	time $program < $file > /dev/null
+	time ./$program < $file > /dev/null
 done
 
 exit 0
