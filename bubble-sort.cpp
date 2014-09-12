@@ -1,3 +1,25 @@
+/*---------------------------------------------------------------------------*\
+ *  bubble-sort.cpp                                                          *
+ *  Written By:  Colin B Hamilton, Tufts University                          *
+ *  Last Modified: 2014-9-11                                                 *
+ *  Description:                                                             *
+ *    The bubble sort algorithm takes a vector of ints and returns the       *
+ *    sorted permutation of that vector.  It runs by:                        *
+ *    1) Stepping through the array, looking for adjacent elements in the    *
+ *       wrong order.                                                        *
+ *    2) Swapping those elements, when found.                                *
+ *    3) Repeating until it steps through the array without finding any      *
+ *       out-of-order elements.                                              *
+ *  The name "bubble sort" comes from the idea that the algorithm moves      *
+ *  elements slightly closer to the right positions each time, like          *
+ *  they are "bubbling" into the correct positions, like bubbles rising to   *
+ *  the surface.  Note, however, that large elements move fast; elements get *
+ *  pushed very quickly to the end of the array, but it takes quite some     *
+ *  time to move elements to the front if they were originally toward the    *
+ *  end.  The former elements are known as "rabbits," for their speed, while *
+ *  the latter are known as "turtles."                                       *
+\*---------------------------------------------------------------------------*/
+
 #include "sort.h"
 
 void swap(std::vector<int> &array, int first, int second)

@@ -1,3 +1,20 @@
+/*---------------------------------------------------------------------------*\
+ *  insertion-sort.cpp                                                       *
+ *  Written By:  Colin B Hamilton, Tufts University                          *
+ *  Last Modified: 2014-9-11                                                 *
+ *  Description:                                                             *
+ *    The insertion sort algorithm takes a vector of ints and returns the    *
+ *    sorted permutation of that vector.  It runs by:                        *
+ *    1) Beginning with a sorted sub-array of size 1 (the first element).    *
+ *    2) Expanding the size of the sub-array by one.                         *
+ *    3) Re-sorting the sub-array by moving the new element to its correct   *
+ *       position.                                                           *
+ *    4) Repeating until the sorted sub-array's size is that of the full     *
+ *       array.                                                              *
+ *  The name "insertion sort" comes from the fact that, we are taking one    *
+ *  element at a time and inserting it into place in the sorted array.       *
+\*---------------------------------------------------------------------------*/
+
 #include "sort.h"
 
 void swap(std::vector<int> &array, int first, int second)

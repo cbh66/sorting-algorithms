@@ -1,3 +1,20 @@
+/*---------------------------------------------------------------------------*\
+ *  selection-sort.cpp                                                       *
+ *  Written By:  Colin B Hamilton, Tufts University                          *
+ *  Last Modified: 2014-9-11                                                 *
+ *  Description:                                                             *
+ *    The selection sort algorithm takes a vector of ints and returns the    *
+ *    sorted permutation of that vector.  It runs by:                        *
+ *    1) Beginning with a sorted sub-array of size 0.                        *
+ *    2) Finding the minimum value of the remaining, unsorted elements.      *
+ *    3) Expanding the sorted sub-array by appending that value.             *
+ *    4) Repeating until the sorted sub-array's size is that of the full     *
+ *       array.                                                              *
+ *  The name "selection sort" comes from the fact that at each step, we are  *
+ *  selecting what the next element should be, and then placing it in the    *
+ *  next slot.
+\*---------------------------------------------------------------------------*/
+
 #include "sort.h"
 
 void swap(std::vector<int> &array, int first, int second)
