@@ -53,83 +53,97 @@ std::vector<int> sort(std::vector<int> list)
     return list;
 }
 
-/*
-STATS:
-For input file data/random-10-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.584s    0m0.613s    0m0.597s     0.5980s
-user    0m0.582s    0m0.582s    0m0.594s     0.5860s
-sys     0m0.001s    0m0.002s    0m0.002s     0.0017s
-For input file data/random-100-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m58.916s   0m58.828s   0m58.348s   58.6973s
-user    0m58.884s   0m58.754s   0m58.315s   58.6510s
-sys     0m0.025s    0m0.027s    0m0.030s     0.0273s
-For input file data/random-1000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.009s    0m0.037s    0m0.008s     0.0180s
-user    0m0.007s    0m0.007s    0m0.007s     0.0070s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/random-1000-neg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.008s    0m0.015s    0m0.008s     0.0103s
-user    0m0.007s    0m0.007s    0m0.007s     0.0070s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/random-1000-nonneg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.009s    0m0.024s    0m0.008s     0.0137s
-user    0m0.007s    0m0.008s    0m0.007s     0.0073s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/reverse-10-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m1.177s    0m1.194s    0m1.176s     1.1823s
-user    0m1.175s    0m1.175s    0m1.174s     1.1747s
-sys     0m0.001s    0m0.002s    0m0.001s     0.0013s
-For input file data/reverse-100-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    1m57.752s   1m56.376s   1m57.019s  117.0490s
-user    1m57.681s   1m56.277s   1m56.953s  116.9703s
-sys     0m0.049s    0m0.050s    0m0.060s     0.0530s
-For input file data/reverse-1000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.015s    0m0.053s    0m0.014s     0.0273s
-user    0m0.013s    0m0.017s    0m0.013s     0.0143s
-sys     0m0.001s    0m0.002s    0m0.001s     0.0013s
-For input file data/reverse-1000-neg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.014s    0m0.024s    0m0.014s     0.0173s
-user    0m0.013s    0m0.015s    0m0.013s     0.0137s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/reverse-1000-nonneg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.016s    0m0.015s    0m0.014s     0.0150s
-user    0m0.015s    0m0.013s    0m0.013s     0.0137s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/sorted-10-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.077s    0m0.018s    0m0.007s     0.0340s
-user    0m0.007s    0m0.007s    0m0.005s     0.0063s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/sorted-100-000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.057s    0m0.081s    0m0.059s     0.0657s
-user    0m0.055s    0m0.061s    0m0.057s     0.0577s
-sys     0m0.002s    0m0.002s    0m0.002s     0.0020s
-For input file data/sorted-1000-all.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.002s    0m0.014s    0m0.002s     0.0060s
-user    0m0.001s    0m0.001s    0m0.001s     0.0010s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/sorted-1000-neg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.002s    0m0.010s    0m0.002s     0.0047s
-user    0m0.001s    0m0.001s    0m0.001s     0.0010s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
-For input file data/sorted-1000-nonneg.data:
-        TRIAL 1     TRIAL 2     TRIAL 3     AVG
-real    0m0.002s    0m0.015s    0m0.002s     0.0063s
-user    0m0.001s    0m0.001s    0m0.001s     0.0010s
-sys     0m0.001s    0m0.001s    0m0.001s     0.0010s
+/* STATS:
+Tests run on Sat Sep 13 12:20:32 2014
+ Timing input file data/random-10-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.6280s        0.5900s        0.5830s        0.5880s        0.5820s      0.5942s
+User:     0.5830s        0.5890s        0.5810s        0.5860s        0.5800s      0.5838s
+System:   0.0020s        0.0010s        0.0010s        0.0010s        0.0010s      0.0012s
+
+ Timing input file data/random-100-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:    57.9620s       57.9510s       57.6810s       57.9880s       58.0060s     57.9176s
+User:    57.9430s       57.9310s       57.6670s       57.9660s       57.9840s     57.8982s
+System:   0.0170s        0.0170s        0.0140s        0.0190s        0.0190s      0.0172s
+
+ Timing input file data/random-1000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0080s        0.0080s        0.0080s        0.0080s        0.0080s      0.0080s
+User:     0.0070s        0.0070s        0.0070s        0.0070s        0.0070s      0.0070s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/random-1000-neg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0080s        0.0080s        0.0080s        0.0090s        0.0080s      0.0082s
+User:     0.0070s        0.0070s        0.0070s        0.0070s        0.0070s      0.0070s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/random-1000-nonneg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0080s        0.0090s        0.0080s        0.0100s        0.0080s      0.0086s
+User:     0.0070s        0.0070s        0.0070s        0.0080s        0.0070s      0.0072s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/reverse-10-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     1.1620s        1.1640s        1.1720s        1.1670s        1.1620s      1.1654s
+User:     1.1600s        1.1630s        1.1700s        1.1650s        1.1600s      1.1636s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/reverse-100-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:   115.6730s      116.5790s      116.9230s      116.2930s      115.7350s    116.2406s
+User:   115.6400s      116.5230s      116.8470s      116.2430s      115.6990s    116.1904s
+System:   0.0310s        0.0470s        0.0500s        0.0390s        0.0300s      0.0394s
+
+ Timing input file data/reverse-1000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0140s        0.0150s        0.0140s        0.0150s        0.0140s      0.0144s
+User:     0.0130s        0.0130s        0.0130s        0.0130s        0.0130s      0.0130s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/reverse-1000-neg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0140s        0.0140s        0.0140s        0.0140s        0.0140s      0.0140s
+User:     0.0130s        0.0120s        0.0120s        0.0130s        0.0130s      0.0126s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/reverse-1000-nonneg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0140s        0.0140s        0.0140s        0.0140s        0.0140s      0.0140s
+User:     0.0130s        0.0120s        0.0120s        0.0130s        0.0130s      0.0126s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/sorted-10-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0060s        0.0070s        0.0070s        0.0060s        0.0060s      0.0064s
+User:     0.0050s        0.0050s        0.0060s        0.0050s        0.0050s      0.0052s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/sorted-100-000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0560s        0.0550s        0.0550s        0.0560s        0.0550s      0.0554s
+User:     0.0540s        0.0530s        0.0530s        0.0540s        0.0530s      0.0534s
+System:   0.0010s        0.0020s        0.0010s        0.0010s        0.0010s      0.0012s
+
+ Timing input file data/sorted-1000-all.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0020s        0.0020s        0.0020s        0.0020s        0.0020s      0.0020s
+User:     0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/sorted-1000-neg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0020s        0.0020s        0.0020s        0.0020s        0.0020s      0.0020s
+User:     0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+
+ Timing input file data/sorted-1000-nonneg.data:
+        TRIAL 0        TRIAL 1        TRIAL 2        TRIAL 3        TRIAL 4       AVG
+Real:     0.0020s        0.0020s        0.0020s        0.0020s        0.0020s      0.0020s
+User:     0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
+System:   0.0010s        0.0010s        0.0010s        0.0010s        0.0010s      0.0010s
 
 
 */
