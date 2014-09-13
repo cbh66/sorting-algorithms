@@ -14,11 +14,12 @@ this_name="./time"
 #
 # Note that this script does not test for correctness of the program's output.
 #  It simply reports on the time taken on each data file.
-#  Note similarly that the program's output, if any, is not written to the console.
+#  Note similarly that the program's output, if any, is not written to the console
+#  or to any output file.
 
 
-if [ $# -eq 0 ]; then
-	echo "Usage: $this_name name-of-program-to-time"
+if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+	echo "Usage: $this_name name-of-program-to-time [file-to-send-output-to]"
 	exit 1
 fi
 
@@ -38,9 +39,19 @@ if ! [ -x $program ]; then
 	fi
 fi
 
+if [ $# -eq 2 ] && [ -f $2 ]; then
+    echo "Warning: output file $2 already exists."
+    echo "Program output will be appended to it."
+fi
+
 for file in $data_folder/*; do
-	echo "Timing input file $file:"
-	time ./$program < $file > /dev/null
+    if [ $# -eq 1 ]; then
+        echo "Timing input file $file:"
+    	time ./$program < $file > /dev/null
+    else
+        echo "Timing input file $file:" >> $2
+        (time ./$program < $file > /dev/null) 2>> $2
+    fi
 done
 
 exit 0
