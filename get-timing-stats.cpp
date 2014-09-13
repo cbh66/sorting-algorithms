@@ -18,8 +18,8 @@
  *    Allow the user to specify the precision of the data recorded.          *
  *    Have an option whereby the program can find data of this format in a   *
  *      file, and delete it.  (May need to add a terminating sentinal, even  *
- *       something like the word END.  But it has to not be a valid file /   *
- *       test name).                                                         *
+ *      something like the word END.  But it has to not be a valid file /   *
+ *      test name).                                                         *
  *    Add standard --version and --help options.                             *
  *    Allow the user to specify the header that goes above the data, perhaps *
  *      allowing options like --show-date or something.                      *
@@ -35,6 +35,9 @@
 #include <ctime>
 using namespace std;
 
+/*  Holds the data for a single test run several times.
+ *  Each vector should be the same length.
+ */
 struct TimingData {
     string test_name;
     vector<double> clock_time;
@@ -42,15 +45,17 @@ struct TimingData {
     vector<double> system_time;
 };
 
+
 void read_one_test(string file_name, map<string, TimingData> &tests);
 void add_times(map<string, TimingData> &tests, string test_name, double real,
                double user, double sys);
 double get_time(ifstream &input);
-void run_system_call(string command, bool echo);
+void run_system_call(string command, bool echo = true);
 void print_results(map<string, TimingData> &tests, ofstream &output);
 void print_vector(vector<double> &v, string seperator, ofstream &output);
 void copy_until_sentinel(ifstream &input, ofstream &output, string sentinel);
 void copy_after_sentinel(ifstream &input, ofstream &output);
+
 
 int main(int argc, char *argv[])
 {
@@ -108,13 +113,38 @@ int main(int argc, char *argv[])
 }
 
 
-void run_system_call(string command, bool echo)
+/*  run_system_call()
+ *  Runs a system call, given a string containing the command to execute.
+ *  Parameters:  command is the command to execute.
+ *               echo specifies whether the command should be written to cerr
+ *                 before it is run.
+ */
+void run_system_call(string command, bool echo = true)
 {
     if (echo) cerr << command << endl;
     system(command.c_str());
 }
 
 
+/*  read_one_test()
+ *  Reads the output file of a single timing test and updates the list of tests
+ *    with the new information.  Any new tests will have a position created
+ *    for them, and any tests that have already been run will have this round's
+ *    data added.
+ *  Parameters: the name of the file to which the tests were written,
+ *    and the map of tests to update.
+ *  Notes: The function may throw an exception if the file could not be opened.
+ *    It is expected that each test will be in the following format:
+ *  
+ *  Some phrase uniquely identifying the test
+ *  real  #m##s
+ *  user  #m##s
+ *  sys   #m##s END-OF-TEST
+ *
+ *  Where END-OF-TEST does not represent a literal string.
+ *  It is an UNCHECKED runtime error if the format is different from this.
+ *  The results are undefined.
+ */
 void read_one_test(string file_name, map<string, TimingData> &tests)
 {
     ifstream input;
@@ -142,6 +172,16 @@ void read_one_test(string file_name, map<string, TimingData> &tests)
 }
 
 
+/*  get_time()
+ *  Reads the time from a given input file and returns the value, as a double
+ *    representing the number of seconds.  The format of the time read is 
+ *    the default format returned by the shell's time utility.
+ *  Parameters:  The input file stream to read from.
+ *  Notes:  This function may throw an exception if the stream is not currently
+ *    pointing right before a sequence of characters of the form
+ *      #m####s
+ *    That is, the sequence (integer - letter m - decimal number - letter s)
+ */
 double get_time(ifstream &input)
 {
     int min;
@@ -154,6 +194,13 @@ double get_time(ifstream &input)
 }
 
 
+/*  add_times()
+ *  Adds the three times given to a particular test in the list of tests.
+ *    If the test has not yet been run, it is created.
+ *  Parameters:  The map of tests to update,
+ *               The name of the specific test to update in the map,
+ *               The three times to add, in seconds.
+ */
 void add_times(map<string, TimingData> &tests, string test_name, double real,
                double user, double sys)
 {
@@ -167,6 +214,24 @@ void add_times(map<string, TimingData> &tests, string test_name, double real,
 }
 
 
+/*  print_results()
+ *  Prints the results of running all tests.  For each test, the times for each
+ *    trial are printed, and then the average.
+ *  Parameters:  The map of tests, and the output file to print to.
+ *  Format:  The output is the following format, with an entry for each test:
+ *
+ *    RESULTS HEADER
+ *    THIS TEST'S HEADER
+ *             TRIAL 0      TRIAL 1     ...     AVG
+ *  Real:      #s           #s          ...     #s
+ *  User:      #s           #s          ...     #s
+ *  System:    #s           #s          ...     #s
+ *
+ *  Where RESULTS HEADER, by default, is "Tests run on (current date/time)"
+ *    and is printed only once, before all tests are listed.
+ *  THIS TEST'S HEADER is whatever was read in the input before each test's
+ *    time.
+ */
 void print_results(map<string, TimingData> &tests, ofstream &output)
 {
     map<string, TimingData>::iterator i = tests.begin();
@@ -192,6 +257,19 @@ void print_results(map<string, TimingData> &tests, ofstream &output)
 }
 
 
+/*  print_vector()
+ *  Prints each entry in a vector to an output stream, and then prints the
+ *    average of all entries in the vector.
+ *  Parameters: The vector to print, the string to print between each entry,
+ *              and the output file to print to.
+ *  Output is a single line of the format:
+ *    [entry 0][seperator][entry 1][seperator]...[entry n][seperator][average]
+ *  Note that currently, each entry is aligned to a width of 8:
+ *    3 characters (padded with spaces if there aren't enough digits),
+ *    the decimal point, and four digits after the decimal.
+ *    This makes it easier to align multiple lines so the decimals match.
+ *    A future version may allow the user to specify the width and precision.
+ */
 void print_vector(vector<double> &v, string seperator, ofstream &output)
 {
     int size = 0;
@@ -208,10 +286,21 @@ void print_vector(vector<double> &v, string seperator, ofstream &output)
 }
 
 
+/*  copy_until_sentinel()
+ *  Writes the contents of one file to another, stopping when the sequence of
+ *    characters in sentinel is encountered.  Note that these characters are
+ *    also copied to the file.
+ *  Parameters:  The input file stream, the output file stream, and the
+ *               sentinel string to search for.
+ *  Note:  If the sentinel does not appear in the input file, this function
+ *    will copy the entire file, leaving the input stream at the EOF.
+ *  Future versions may allow for wildcard characters, or provide an option
+ *    to consider all whitespace equal.  For now, the sentinel must match
+ *    exactly, character-for-character.
+ */
 void copy_until_sentinel(ifstream &input, ofstream &output, string sentinel)
 {
-    char c = '\0';
-    c = input.get();
+    char c = input.get();
     while (c != EOF) {
         for (unsigned i = 0; c == sentinel[i]; c = input.get(), ++i) {
             output.put(c);
@@ -223,6 +312,10 @@ void copy_until_sentinel(ifstream &input, ofstream &output, string sentinel)
 }
 
 
+/*  copy_after_sentinel()
+ *  Copies an input file stream to an output file stream.
+ *  Parameters:  The input file stream and the output file stream.
+ */
 void copy_after_sentinel(ifstream &input, ofstream &output)
 {
     char c;
