@@ -117,9 +117,9 @@ int main(int argc, char *argv[])
  *  Runs a system call, given a string containing the command to execute.
  *  Parameters:  command is the command to execute.
  *               echo specifies whether the command should be written to cerr
- *                 before it is run.
+ *                 before it is run, and defaults to true.
  */
-void run_system_call(string command, bool echo = true)
+void run_system_call(string command, bool echo)
 {
     if (echo) cerr << command << endl;
     system(command.c_str());
