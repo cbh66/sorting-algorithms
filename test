@@ -1,0 +1,98 @@
+#!/bin/bash
+
+this_name="./test"
+
+#  USAGE:
+#  $ ./test name-of-program-to-test
+#
+#  This script assumes:
+#    1) the argument given is also the name of an executable in the same folder
+#    OR when given to a makefile, such an executable will be created, AND
+#    2) EITHER there are two folders named input/ and output/ respectively,
+#       and each folder has files with corresponsing names, where output/name
+#       is the output expected when the program is given input/name
+#    OR there is a folder named data/ which contains a number of files with
+#       .input and .output extensions, where data/name.output is the output
+#       expected when the program is given data/name.input
+#
+#  If the program fails any test, all other tests will continue to run.
+#    The names of any and all tests failed will be printed to the console.
+#  Note that this script does NOT test the return value of the test.
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $this_name name-of-program-to-time"
+    exit 1
+fi
+
+program=$1
+if ! [ -x $program ]; then
+    make $program
+    if ! [ $? -eq 0 ]; then
+        echo "ERROR: The file $program does not exist or is not an "\
+             "executable in this directory, and make was unable to create it"
+        exit 1
+    fi
+fi
+
+input_folder="input"
+output_folder="output"
+data_folder="data"
+diff_command="diff --brief --ignore-space-change"
+if ! [ -d $input_folder ] || ! [ -d $output_folder ]; then
+    if ! [ -d $data_folder ]; then
+        echo "Please either create $input_folder/ and $output_folder/ "\
+             "directories, or a single $data_folder/ directory"
+        exit 1
+    fi
+    temp=$(echo $data_folder/*.input)
+    if [ "$temp" == "$data_folder/*.input" ]; then
+        echo "Please create some input files in your $data_folder directory, "\
+             "with the extension .input"
+        exit 1
+    fi
+
+    # If here, there are .input and (maybe) .output files to use.
+    # If an input file is found with no matching output file, expect no output.
+    for input in $data_folder/*.input; do
+        output=${input/%input/output}
+        if [ -f $output ]; then          # Compare output with expected output
+            ./$program < $input | $diff_command - $output > /dev/null
+            difference=$?
+            if [ $difference -ne 0 ]; then
+                echo "Failed test on $input"
+            fi
+        else             # if there's no corresponding output file, program is
+                         # expected to have no output
+            program_output=$(./$program < $input)
+            if ! [ -n $program_output ]; then
+                echo "Failed test on $input"
+            fi
+        fi
+    done
+else                    # If here, there are input/ and output/ folders to use
+    temp=$(echo $input_folder/*)
+    if [ "$temp" == "$input_folder/*" ]; then
+        echo "Please create some input files in your $input_folder directory"
+        exit 1
+    fi
+
+    for input in $input_folder/*; do
+        output=${input/#$input_folder/$output_folder}
+        if [ -f $output ]; then          # Compare output with expected output
+            ./$program < $input | $diff_command - $output > /dev/null
+            difference=$?
+            if [ $difference -ne 0 ]; then
+                echo "Failed test on $input"
+                echo $difference
+            fi
+        else        # if there's no corresponding output file, program is
+                    # expected to have no output
+            program_output=$(./$program < $input)
+            if ! [ -n $program_output ]; then
+                echo "Failed test on $input"
+            fi
+        fi
+    done
+fi
+
+exit 0
