@@ -10,12 +10,15 @@
  *    2) Swapping those elements, when found.                                *
  *    3) Repeating until it steps through the array without finding any      *
  *       out-of-order elements.                                              *
+ *    Note that this implementation also keeps track of the last swap made   *
+ *      on each scan.  Subsequent scans need not pass that point, because    *
+ *      if no swaps were made beyond it, that sub-array is already sorted.   *
  *  The name "bubble sort" comes from the idea that the algorithm moves      *
  *  elements slightly closer to the right positions each time, like          *
  *  they are "bubbling" into the correct positions, like bubbles rising to   *
  *  the surface.  Note, however, that large elements move fast; elements get *
  *  pushed very quickly to the end of the array, but it takes quite some     *
- *  time to move elements to the front if they were originally toward the    *
+ *  time to move small elements to the front if they started toward the      *
  *  end.  The former elements are known as "rabbits," for their speed, while *
  *  the latter are known as "turtles."                                       *
 \*---------------------------------------------------------------------------*/
