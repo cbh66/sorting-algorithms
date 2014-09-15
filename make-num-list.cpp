@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
 	} else {
 		write_random_nums(min, max, amt, output_file);
 	}
+	output_file << endl;
 	return 0;
 }
 
