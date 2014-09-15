@@ -11,7 +11,7 @@ int main()
 	while (!cin.eof()) {
 		list.push_back(current);
 		cin >> current;
-	}
+    }
 
 	list = sort(list);
 
@@ -21,5 +21,6 @@ int main()
 		cout << divider << list[i];
 		divider = " ";
 	}
+    cout << endl;
 	return 0;
 }
