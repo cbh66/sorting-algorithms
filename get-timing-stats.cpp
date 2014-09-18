@@ -33,6 +33,7 @@
 #include <ctime>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/filesystem.hpp>
 using namespace std;
 
 const string VERSION_INFORMATION =
@@ -84,8 +85,10 @@ int NUM_TESTS;
 
 int main(int argc, char *argv[])
 {
+    namespace fs = boost::filesystem;
     string timing_program = "./time";
-    string temp_timing_file = "/tmp/timing_stats_output.data";
+    string temp_timing_file = fs::temp_directory_path().native()
+                            + fs::unique_path().native() + ".time";
 
     parse_command_line_args(argc, argv);
     string temp_output_file = tmpnam(NULL);
@@ -97,6 +100,7 @@ int main(int argc, char *argv[])
     cerr << "Sentinel: " << OUTPUT_SENTINEL << endl;
     cerr << "Program name: " << PROGRAM_NAME << endl;
     cerr << "Output file: " << OUTPUT_FILE_NAME << endl;
+    cerr << "Temp file: " << temp_timing_file << endl;
 
     map<string, TimingData> tests;
     quiet_prompt("Running " + boost::lexical_cast<string>(NUM_TESTS) +
@@ -109,28 +113,33 @@ int main(int argc, char *argv[])
                      " of " + boost::lexical_cast<string>(NUM_TESTS));
         run_system_call(command, BE_VERBOSE);
         read_one_test(temp_timing_file, tests);
-        run_system_call(remove_command, BE_VERBOSE);
+        fs::resize_file(temp_timing_file, 0);
     }
 
     if (OUTPUT_FILE_NAME == "") {
         print_results(tests, cout);
-        run_system_call("rm " + temp_output_file, BE_VERBOSE);
+        fs::remove(temp_timing_file);
         return 0;
     }
 
     ofstream output;
     ifstream input;
     output.open(temp_output_file.c_str());
-    if (!output.is_open()) cerr << "Failed to create temporary file";
-    input.open((OUTPUT_FILE_NAME).c_str());
-    if (!input.is_open()) cerr << "Failed to open output file"
-                               << OUTPUT_FILE_NAME;
+    if (!output.is_open()) {
+        cerr << "Unable to create temporary file" << endl;
+        return 1;
+    }
     output.setf(ios::fixed);
-    copy_until_sentinel(input, output, OUTPUT_SENTINEL);
+    input.open((OUTPUT_FILE_NAME).c_str());
+    if (input.is_open()) {
+        copy_until_sentinel(input, output, OUTPUT_SENTINEL);
+    }
     print_results(tests, output);
-    copy_after_sentinel(input, output);
-    run_system_call("mv " + temp_output_file + " " + OUTPUT_FILE_NAME,
-                    BE_VERBOSE);
+    if (input.is_open()) {
+        copy_after_sentinel(input, output);
+    }
+    fs::rename(temp_output_file, OUTPUT_FILE_NAME);
+    fs::remove(temp_timing_file);
     return 0;
 }
 
@@ -163,7 +172,7 @@ void parse_command_line_args(int argc, char *argv[])
         ("sentinel,s", po::value<string>(&OUTPUT_SENTINEL),
             "Provide the sentinel after which to insert the report\n"
             "(Only available in insert mode)")
-        ("times,t", po::value<int>(&NUM_TESTS)->default_value(5),
+        ("times,t", po::value<int>(&NUM_TESTS)->default_value(1),
             "Specify the number of times to repeat the set of tests")
     ;
     p_desc.add("input", 1);
