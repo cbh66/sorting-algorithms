@@ -12,7 +12,7 @@ num-list: make-num-list.cpp
 	$(CXX) $(LDFLAGS) make-num-list.cpp -o make-num-list
 
 timing-stats: get-timing-stats.cpp
-	$(CXX) $(LDFLAGS) get-timing-stats.cpp -o get-timing-stats
+	$(CXX) $(LDFLAGS) -lboost_program_options get-timing-stats.cpp -o get-timing-stats
 
 %sort: %sort.o $(MAINOBJ)
 	$(CXX) $(LDFLAGS) $^ -o $@
