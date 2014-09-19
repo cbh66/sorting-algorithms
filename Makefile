@@ -11,8 +11,8 @@ main: $(MAINFILE)
 num-list: make-num-list.cpp
 	$(CXX) $(LDFLAGS) make-num-list.cpp -o make-num-list
 
-timing-stats: get-timing-stats.cpp
-	$(CXX) $(LDFLAGS) -lboost_program_options get-timing-stats.cpp -o get-timing-stats
+timing-stats: get-timing-stats.o program-output.o timing-data.o
+	$(CXX) $(LDFLAGS) -lboost_program_options -lboost_filesystem -lboost_system get-timing-stats.o program-output.o timing-data.o -o get-timing-stats
 
 %sort: %sort.o $(MAINOBJ)
 	$(CXX) $(LDFLAGS) $^ -o $@
